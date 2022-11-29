@@ -135,15 +135,17 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             res = doc.select(".result");
-            resTop = doc.select(".up").text().split("\\.")[0];
+            resTop = doc.select(".dn").text().split("\\.")[0];
 
-            String[] st = res.html().split("<h3>");
-            System.out.println(resTop.split(", ")[2].split(" ")[0] + "restop");
+
+            System.out.println(resTop + "restop");
             if (resTop.split(", ")[2].split(" ")[0].equals("верхняя")) {
                 week = 1;
             } else {
                 week = 0;
             }
+
+            String[] st = res.html().split("<h3>");
             st[0] = "";
             for (String i : st) {
                 if (i.isEmpty()) continue;
