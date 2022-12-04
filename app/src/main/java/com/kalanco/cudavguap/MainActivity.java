@@ -9,7 +9,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +17,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kalanco.cudavguap.adapters.LessonsAdapter;
 import com.kalanco.cudavguap.adapters.ScheduleAdapter;
 import com.kalanco.cudavguap.db.DbHelper;
 import com.kalanco.cudavguap.models.Day;
@@ -26,13 +24,11 @@ import com.kalanco.cudavguap.models.Lesson;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView list;
@@ -110,12 +106,12 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase database = new DbHelper(this).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("a", "b");
-        database.insert(DbContract.Employer.TABLE_NAME, null, values);
+        database.insert(DbContract.Schedule.TABLE_NAME, null, values);
     }
     public String readFromDb(){
         SQLiteDatabase database = new DbHelper(this).getReadableDatabase();
         Cursor cursor = database.rawQuery("Select * from Schadual where id = ?;", new String[] {"1"});
-        return cursor.getString(cursor.getColumnIndexOrThrow(DbContract.Employer.COLUMN_NAME));
+        return cursor.getString(cursor.getColumnIndexOrThrow(DbContract.Schedule.COLUMN_NAME));
     }
     class Task extends AsyncTask<Void, Void, Void> {
 
@@ -132,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 doc = Jsoup.connect("https://guap.ru/rasp/?g=186").get();
             } catch (IOException e) {
-                e.printStackTrace();
+                cancel(false);
             }
             res = doc.select(".result");
             resTop = doc.select(".dn").text().split("\\.")[0];
@@ -207,5 +203,12 @@ public class MainActivity extends AppCompatActivity {
             scheduleAdapter.notifyDataSetChanged();
 
         }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(MainActivity.this, "не получилось", Toast.LENGTH_LONG).show();
+        }
     }
+
 }
